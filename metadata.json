@@ -1,0 +1,5 @@
+{
+  "name": "AI Mind Map Generator",
+  "description": "An intelligent mind mapping tool that automatically generates and visualizes hierarchical mind maps from unstructured text documents using the Gemini API. Users can also export the generated content as study flashcards.",
+  "requestFramePermissions": []
+}
