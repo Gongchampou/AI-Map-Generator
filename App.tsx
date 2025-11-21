@@ -44,9 +44,9 @@ const App: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+  const [theme, setTheme] = useState<'light' | 'dark' | 'reader'>(() => {
     const savedTheme = localStorage.getItem('mind-map-theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+    if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'reader') return savedTheme as 'light' | 'dark' | 'reader';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
+    root.classList.remove('light', 'dark', 'reader');
     root.classList.add(theme);
     localStorage.setItem('mind-map-theme', theme);
   }, [theme]);
@@ -99,7 +99,13 @@ const App: React.FC = () => {
 
   // --- Handlers ---
 
-  const toggleTheme = () => setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  const toggleTheme = () => {
+    setTheme(prev => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'reader';
+      return 'light';
+    });
+  };
 
   const handleGenerateMindMap = useCallback(async () => {
     if (!documentText.trim()) {
@@ -491,8 +497,8 @@ const App: React.FC = () => {
         {/* Sidebar Footer */}
         <div className={`p-5 border-t-2 border-brand-border ${isSidebarCollapsed ? 'items-center flex flex-col gap-4' : ''}`}>
             <button onClick={toggleTheme} className="p-3 rounded-2xl bg-brand-bg border-2 border-brand-border hover:border-brand-primary text-brand-text transition-all w-full flex items-center justify-center gap-3 font-medium">
-                <Icon type={theme === 'light' ? 'moon' : 'sun'} className="w-5 h-5" />
-                {!isSidebarCollapsed && <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
+                <Icon type={theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'book'} className="w-5 h-5" />
+                {!isSidebarCollapsed && <span>{theme === 'light' ? 'Light Mode' : theme === 'dark' ? 'Dark Mode' : 'Reader Mode'}</span>}
             </button>
         </div>
       </div>

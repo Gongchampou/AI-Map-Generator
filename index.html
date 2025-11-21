@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>AI Map Generator</title>
     
-    <!-- Google Fonts: M PLUS Rounded 1c for Anime/Japanese UI feel -->
+    <!-- Google Fonts: Outfit for Modern/Premium UI feel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
       :root {
-        font-family: 'M PLUS Rounded 1c', sans-serif;
+      :root {
+        font-family: 'Outfit', sans-serif;
+      }
       }
       
       /* Custom Scrollbar - Cute & Round */
@@ -52,7 +54,7 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"M PLUS Rounded 1c"', 'sans-serif'],
+              sans: ['"Outfit"', 'sans-serif'],
             },
             colors: {
               'brand-bg': 'rgb(var(--color-bg) / <alpha-value>)',
@@ -103,28 +105,42 @@
     </script>
     
     <style>
-      /* CSS Variables for Theming - Simple Anime Palette */
+      /* CSS Variables for Theming - Professional & Reader Modes */
       :root {
-        --color-bg: 243 248 252; /* #f3f8fc */
-        --color-surface: 255 255 255; /* #ffffff */
-        --color-surface-highlight: 224 242 254; /* #e0f2fe */
-        --color-border: 203 213 225; /* #cbd5e1 */
-        --color-text: 51 65 85; /* #334155 */
-        --color-text-secondary: 100 116 139; /* #64748b */
-        --color-primary: 56 189 248; /* #38bdf8 */
-        --color-primary-hover: 14 165 233; /* #0ea5e9 */
-        --color-accent: 244 114 182; /* #f472b6 */
+        /* Professional Light Theme - Softer, less harsh white */
+        --color-bg: 248 250 252; /* Slate 50 - Softer background */
+        --color-surface: 255 255 255; /* White surface */
+        --color-surface-highlight: 241 245 249; /* Slate 100 */
+        --color-border: 226 232 240; /* Slate 200 */
+        --color-text: 51 65 85; /* Slate 700 - Softer contrast */
+        --color-text-secondary: 100 116 139; /* Slate 500 */
+        --color-primary: 14 165 233; /* Sky 500 - Professional Blue */
+        --color-primary-hover: 2 132 199; /* Sky 600 */
+        --color-accent: 99 102 241; /* Indigo 500 */
       }
       .dark {
-        --color-bg: 15 23 42; /* #0f172a */
-        --color-surface: 30 41 59; /* #1e293b */
-        --color-surface-highlight: 51 65 85; /* #334155 */
-        --color-border: 71 85 105; /* #475569 */
-        --color-text: 241 245 249; /* #f1f5f9 */
-        --color-text-secondary: 148 163 184; /* #94a3b8 */
-        --color-primary: 56 189 248; /* #38bdf8 */
-        --color-primary-hover: 125 211 252; /* #7dd3fc */
-        --color-accent: 244 114 182; /* #f472b6 */
+        --color-bg: 15 23 42; /* Slate 900 */
+        --color-surface: 30 41 59; /* Slate 800 */
+        --color-surface-highlight: 51 65 85; /* Slate 700 */
+        --color-border: 71 85 105; /* Slate 600 */
+        --color-text: 241 245 249; /* Slate 100 */
+        --color-text-secondary: 148 163 184; /* Slate 400 */
+        --color-primary: 56 189 248; /* Sky 400 */
+        --color-primary-hover: 125 211 252; /* Sky 300 */
+        --color-accent: 129 140 248; /* Indigo 400 */
+      }
+      .reader {
+        /* Reader Mode - Warm Sepia Tones */
+        --color-bg: 24df6e3; /* Warm Beige */
+        --color-bg: 253 246 227; /* Solarized Light BG */
+        --color-surface: 255 252 240; /* Off-white warm */
+        --color-surface-highlight: 238 232 213; /* Darker beige */
+        --color-border: 210 203 186; /* Warm Grey */
+        --color-text: 67 59 50; /* Dark Brown/Grey */
+        --color-text-secondary: 101 123 131; /* Muted Blue/Grey */
+        --color-primary: 181 137 0; /* Solarized Yellow/Orange */
+        --color-primary-hover: 203 75 22; /* Solarized Orange */
+        --color-accent: 211 54 130; /* Solarized Magenta */
       }
     </style>
 
