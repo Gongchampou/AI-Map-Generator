@@ -367,29 +367,30 @@ const App: React.FC = () => {
       {/* Components Overlays */}
       <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} documentContext={documentText || mindMapData?.content || ""} />
 
-      {/* Loading State (Animated Orb) */}
+      {/* Loading State (ChatGPT Style Thinking Sphere) */}
       {isLoading && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm text-white animate-fade-in">
-           <div className="relative w-64 h-64 animate-float">
-              <div className="absolute inset-0 rounded-full border-2 border-brand-primary/30 animate-spin-slow"></div>
-              <div className="absolute inset-4 rounded-full border-2 border-brand-accent/30 animate-spin-reverse-slow"></div>
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black text-white animate-fade-in">
+           <div className="relative w-64 h-64 flex items-center justify-center">
+              {/* Core Sphere */}
+              <div className="absolute w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 blur-md z-10 animate-breathe shadow-[0_0_60px_rgba(56,189,248,0.6)]"></div>
+              <div className="absolute w-32 h-32 rounded-full bg-white opacity-20 blur-xl z-10 animate-pulse"></div>
               
-              <div className="absolute inset-8 rounded-full bg-gradient-to-b from-brand-primary to-brand-accent blur-md opacity-60 animate-pulse-slow"></div>
-              <div className="absolute inset-8 rounded-full shadow-[inset_-10px_-10px_30px_rgba(0,0,0,0.5),inset_10px_10px_30px_rgba(255,255,255,0.2)] bg-white/10 backdrop-blur-sm"></div>
+              {/* Ripples */}
+              <div className="absolute w-32 h-32 rounded-full border border-cyan-500/30 animate-ripple" style={{ animationDelay: '0s' }}></div>
+              <div className="absolute w-32 h-32 rounded-full border border-cyan-500/20 animate-ripple" style={{ animationDelay: '1s' }}></div>
+              <div className="absolute w-32 h-32 rounded-full border border-cyan-500/10 animate-ripple" style={{ animationDelay: '2s' }}></div>
               
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <span className="text-lg font-bold tracking-[0.2em] text-white drop-shadow-md">
+              {/* Text */}
+              <div className="absolute z-20 flex items-center justify-center">
+                  <span className="text-sm font-bold tracking-[0.3em] text-white drop-shadow-lg">
                       THINKING
                   </span>
               </div>
            </div>
            
-           <div className="mt-12 space-y-2 text-center max-w-md">
-               <h3 className="text-2xl font-bold text-brand-primary">
-                   Processing Data
-               </h3>
+           <div className="mt-8 space-y-2 text-center max-w-md z-20">
                <div className="h-6 overflow-hidden">
-                   <p className="text-sm text-brand-text-secondary/80 font-medium">
+                   <p className="text-sm text-cyan-200/80 font-medium animate-pulse">
                        {`> ${LOADING_STEPS[loadingStep]}`}
                    </p>
                </div>
