@@ -37,6 +37,7 @@ const App: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [connectionStyle, setConnectionStyle] = useState<'straight' | 'n8n'>('straight');
   
   // New AI Features State
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -554,6 +555,8 @@ const App: React.FC = () => {
                     data={mindMapData} 
                     searchQuery={searchQuery} 
                     hoveredNodeId={hoveredNodeId}
+                    connectionStyle={connectionStyle}
+                    onToggleStyle={() => setConnectionStyle(prev => prev === 'straight' ? 'n8n' : 'straight')}
                  />
              ) : (
                  <div className="h-full flex flex-col items-center justify-center text-brand-text-secondary opacity-60 p-8 text-center">

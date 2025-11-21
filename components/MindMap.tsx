@@ -161,8 +161,9 @@ const MindMapNode: React.FC<{
 const OrthogonalConnector: React.FC<{ 
     from: { x: number, y: number, height: number }, 
     to: { x: number, y: number, height: number },
-    color?: string 
-}> = ({ from, to, color }) => {
+    color?: string,
+    style: 'straight' | 'n8n'
+}> = ({ from, to, color, style }) => {
   // Source: Right side of parent
   const startX = from.x + NODE_WIDTH;
   const startY = from.y + from.height / 2; // Center vertically relative to node height
@@ -178,20 +179,32 @@ const OrthogonalConnector: React.FC<{
 
   let path = "";
   
-  // Simple check to avoid weird radius artifacts on small distances
-  if (Math.abs(midX - startX) < radius || Math.abs(endY - startY) < radius) {
-      // Fallback to straight polyline if too tight
-      path = `M ${startX},${startY} L ${midX},${startY} L ${midX},${endY} L ${endX},${endY}`;
+  if (style === 'n8n') {
+      // N8N Style: Smooth Bezier Curve
+      // Control points: 50% of the distance horizontally
+      const cp1x = startX + (endX - startX) * 0.5;
+      const cp1y = startY;
+      const cp2x = endX - (endX - startX) * 0.5;
+      const cp2y = endY;
+
+      path = `M ${startX},${startY} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${endX},${endY}`;
   } else {
-      // Rounded corners logic
-      const dirY = endY > startY ? 1 : -1;
-      
-      path = `M ${startX},${startY} 
-              L ${midX - radius},${startY} 
-              Q ${midX},${startY} ${midX},${startY + radius * dirY}
-              L ${midX},${endY - radius * dirY}
-              Q ${midX},${endY} ${midX + radius},${endY}
-              L ${endX},${endY}`;
+      // Straight (Orthogonal) Style
+      // Simple check to avoid weird radius artifacts on small distances
+      if (Math.abs(midX - startX) < radius || Math.abs(endY - startY) < radius) {
+          // Fallback to straight polyline if too tight
+          path = `M ${startX},${startY} L ${midX},${startY} L ${midX},${endY} L ${endX},${endY}`;
+      } else {
+          // Rounded corners logic
+          const dirY = endY > startY ? 1 : -1;
+          
+          path = `M ${startX},${startY} 
+                  L ${midX - radius},${startY} 
+                  Q ${midX},${startY} ${midX},${startY + radius * dirY}
+                  L ${midX},${endY - radius * dirY}
+                  Q ${midX},${endY} ${midX + radius},${endY}
+                  L ${endX},${endY}`;
+      }
   }
 
   return (
@@ -235,7 +248,13 @@ const calculateTreeMetrics = (node: MindMapNodeData, collapsedIds: Set<string>):
     return { height: Math.max(nodeHeight, childrenHeight) };
 };
 
-const MindMap: React.FC<{ data: MindMapNodeData; searchQuery: string; hoveredNodeId: string | null; }> = ({ data, searchQuery, hoveredNodeId }) => {
+const MindMap: React.FC<{ 
+    data: MindMapNodeData; 
+    searchQuery: string; 
+    hoveredNodeId: string | null; 
+    connectionStyle: 'straight' | 'n8n';
+    onToggleStyle: () => void;
+}> = ({ data, searchQuery, hoveredNodeId, connectionStyle, onToggleStyle }) => {
   const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 1000, height: 800 });
   const [collapsedNodeIds, setCollapsedNodeIds] = useState<Set<string>>(new Set());
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -659,6 +678,7 @@ const MindMap: React.FC<{ data: MindMapNodeData; searchQuery: string; hoveredNod
                     from={{x: node.x, y: node.y, height: node.height}} 
                     to={{x: child.x, y: child.y, height: child.height}} 
                     color={child.color} 
+                    style={connectionStyle}
                 />
             ))
             ))}
@@ -717,6 +737,14 @@ const MindMap: React.FC<{ data: MindMapNodeData; searchQuery: string; hoveredNod
             title="Fit to Screen"
         >
             <Icon type="maximize" className="w-5 h-5" />
+        </button>
+        <div className="h-0.5 bg-brand-border/50 mx-2 my-0.5 rounded-full"></div>
+        <button 
+            onClick={onToggleStyle} 
+            className="p-2 rounded-xl hover:bg-brand-surface-highlight text-brand-text hover:text-brand-primary transition-all active:scale-95"
+            title={connectionStyle === 'straight' ? "Switch to Curved Lines" : "Switch to Straight Lines"}
+        >
+            <Icon type={connectionStyle === 'straight' ? 'branch' : 'minus'} className="w-5 h-5" />
         </button>
       </div>
     </div>
