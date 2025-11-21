@@ -170,7 +170,7 @@ const App: React.FC = () => {
       
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-      const margin = 15; 
+      const margin = 15; // Tighter margin
       const contentWidth = pageWidth - (margin * 2);
       let cursorY = 20;
 
@@ -178,7 +178,7 @@ const App: React.FC = () => {
       const checkSpace = (heightNeeded: number) => {
         if (cursorY + heightNeeded > pageHeight - margin) {
           doc.addPage();
-          cursorY = margin + 10; 
+          cursorY = margin + 10; // Extra top margin on new pages
         }
       };
 
@@ -203,8 +203,8 @@ const App: React.FC = () => {
       
       const title = mindMapData.topic || "Mind Map Report";
       const titleLines = doc.splitTextToSize(title, contentWidth);
-      doc.text(titleLines, margin, cursorY + 8); // Reduced top padding
-      cursorY += (titleLines.length * 10) + 5; // Reduced line height multiplier
+      doc.text(titleLines, margin, cursorY + 10);
+      cursorY += (titleLines.length * 12) + 5;
 
       // Root Summary Box
       if (mindMapData.content) {
@@ -217,14 +217,14 @@ const App: React.FC = () => {
           doc.setTextColor(71, 85, 105);
           
           const summaryLines = doc.splitTextToSize(mindMapData.content, contentWidth - 10);
-          const boxHeight = (summaryLines.length * 5) + 8; // Reduced line height and padding
+          const boxHeight = (summaryLines.length * 6) + 10;
           
           doc.roundedRect(margin, cursorY, contentWidth, boxHeight, 3, 3, 'FD');
-          doc.text(summaryLines, margin + 5, cursorY + 7);
+          doc.text(summaryLines, margin + 5, cursorY + 8);
           
-          cursorY += boxHeight + 10; // Reduced bottom margin
+          cursorY += boxHeight + 15;
       } else {
-          cursorY += 5;
+          cursorY += 10;
       }
 
       // --- Recursive Render Function ---
@@ -238,38 +238,40 @@ const App: React.FC = () => {
                  const childRgb = hexToRgb(branchColor);
                  
                  // Section Header
-                 checkSpace(35); // Reduced space check
+                 checkSpace(40); // Ensure enough space for header + at least one line
                  
                  // Colored Section Bar
                  doc.setFillColor(childRgb.r, childRgb.g, childRgb.b);
-                 doc.roundedRect(margin, cursorY, contentWidth, 8, 2, 2, 'F'); // Reduced height
+                 doc.roundedRect(margin, cursorY, contentWidth, 10, 2, 2, 'F');
                  
                  doc.setFont("helvetica", "bold");
-                 doc.setFontSize(13); // Slightly smaller font
+                 doc.setFontSize(14);
                  doc.setTextColor(255, 255, 255);
-                 doc.text(child.topic.toUpperCase(), margin + 5, cursorY + 5.5);
+                 doc.text(child.topic.toUpperCase(), margin + 5, cursorY + 7);
                  
-                 cursorY += 10; // Reduced spacing
+                 cursorY += 14;
                  
                  // Section Content
                  if (child.content) {
                      doc.setFont("helvetica", "normal");
-                     doc.setFontSize(10); // Smaller font
+                     doc.setFontSize(11);
                      doc.setTextColor(51, 65, 85);
                      const contentLines = doc.splitTextToSize(child.content, contentWidth - 5);
-                     checkSpace(contentLines.length * 4.5);
+                     checkSpace(contentLines.length * 5);
                      doc.text(contentLines, margin + 2, cursorY);
-                     cursorY += (contentLines.length * 4.5) + 3; // Reduced spacing
+                     cursorY += (contentLines.length * 5) + 4;
                  }
                  
                  // Render Children
                  if (child.children && child.children.length > 0) {
+                     // Two-column layout for Level 2 if space permits? 
+                     // For now, let's stick to a clean indented list but with visual connectors
                      child.children.forEach(grandChild => {
                          renderNode(grandChild, depth + 2, branchColor, margin + 5);
                      });
                  }
                  
-                 cursorY += 4; // Reduced spacing between sections
+                 cursorY += 8; // Spacing between sections
              });
              return;
         }
@@ -278,38 +280,45 @@ const App: React.FC = () => {
         const indent = parentX + 5;
         const availableW = pageWidth - margin - indent;
         
-        checkSpace(10);
+        checkSpace(15);
         
         // Bullet Point Style
         doc.setDrawColor(rgb.r, rgb.g, rgb.b);
         doc.setFillColor(rgb.r, rgb.g, rgb.b);
-        doc.circle(indent - 4, cursorY - 1, 1.2, 'F'); // Smaller bullet
+        doc.circle(indent - 4, cursorY - 1, 1.5, 'F');
         
         // Topic
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(10); // Smaller font
-        doc.setTextColor(30, 41, 59); 
+        doc.setFontSize(11);
+        doc.setTextColor(30, 41, 59); // Dark Slate
         
         const topicLines = doc.splitTextToSize(node.topic, availableW);
         doc.text(topicLines, indent, cursorY);
-        const topicHeight = topicLines.length * 4.5;
+        const topicHeight = topicLines.length * 5;
         
         // Content (Inline or Block)
         let contentHeight = 0;
         if (node.content) {
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(9); // Smaller font
-            doc.setTextColor(100, 116, 139); 
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139); // Slate 500
             
+            // If topic is short, try to put content on same line?
+            // Let's keep it structured: Topic -> Content block
             const contentLines = doc.splitTextToSize(node.content, availableW);
             checkSpace(topicHeight + (contentLines.length * 4));
             
             doc.text(contentLines, indent, cursorY + topicHeight);
-            contentHeight = (contentLines.length * 4);
+            contentHeight = (contentLines.length * 4.5);
         }
         
+        // Vertical Line Connector (Thread)
+        // Draw line from bullet down to end of content
         const totalItemHeight = topicHeight + contentHeight;
-        cursorY += totalItemHeight + 2; // Reduced spacing between items
+        // doc.setLineWidth(0.2);
+        // doc.line(indent - 4, cursorY, indent - 4, cursorY + totalItemHeight);
+
+        cursorY += totalItemHeight + 4;
 
         // Recursion
         if (node.children) {
