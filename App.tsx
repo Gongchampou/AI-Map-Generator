@@ -391,7 +391,7 @@ const App: React.FC = () => {
            <div className="mt-8 space-y-2 text-center max-w-md z-20">
                <div className="h-6 overflow-hidden">
                    <p className="text-sm text-cyan-200/80 font-medium animate-pulse">
-                       {`> ${LOADING_STEPS[loadingStep]}`}
+                       {` ${LOADING_STEPS[loadingStep]}`}
                    </p>
                </div>
            </div>
